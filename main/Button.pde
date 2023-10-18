@@ -250,6 +250,7 @@ class Button {
   }
 
   public void setFontSize (int size) {
+    this.autoFontSize = false;
     this.fontSize = size;
   }
 
@@ -296,7 +297,7 @@ class Button {
   public void setFont (String font) {
     this.font = font;
   }
-
+  
   public int getX () {
     return this.x;
   }
