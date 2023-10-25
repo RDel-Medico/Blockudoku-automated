@@ -46,17 +46,12 @@ void initGame () {
   p = new Piece[NB_PIECE];
   generePiece(p);
   for (int i = 0; i < NB_PIECE; i++) {
-    pieces[i].placePiece(p[i].type);
+    pieces[i].placePieceP(p[i].type);
   }
 }
 
-
-  
-
-
 void draw() {
   setGradient(0, 0, width, height, backgroundTop, backgroundBot, 1);
-  //setGradient(width/2, 0, width/2, height, b2, b1, X_AXIS);
   
   if (currentMenu == Menu.ACCEUIL) {
     textAlign(CENTER, CENTER);
@@ -100,6 +95,8 @@ void mouseReleased() {
     currentMenu = Menu.JEU;
     acceuilButtonsActivated[0] = false;
     initGame();
+    
+    
   } else if (jeuButtonsActivated[0]) {
 
     if (!b.placePiece(p[firstAvaiable(p)].type)) {
@@ -113,7 +110,7 @@ void mouseReleased() {
     if (firstAvaiable(p) == -1) {
       generePiece(p);
       for (int i = 0; i < NB_PIECE; i++) {
-        pieces[i].placePiece(p[i].type);
+        pieces[i].placePieceP(p[i].type);
       }
     }
     jeuButtonsActivated[0] = false;
