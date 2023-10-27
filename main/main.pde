@@ -99,14 +99,16 @@ void mouseReleased() {
     
   } else if (jeuButtonsActivated[0]) {
 
-    if (!b.placePiece(p[firstAvaiable(p)].type)) {
+    int piecePlaced = b.placePiece(p);
+    
+    if (piecePlaced == -1) {
       currentMenu = Menu.ACCEUIL;
+    } else {
+      pieces[piecePlaced].resetBoard();
+      p[piecePlaced] = null;
     }
 
-    pieces[firstAvaiable(p)].resetBoard();
-
-    p[firstAvaiable(p)] = null;
-
+    
     if (firstAvaiable(p) == -1) {
       generePiece(p);
       for (int i = 0; i < NB_PIECE; i++) {
