@@ -138,7 +138,7 @@ class Board {
     }
   }
 
-  public int checkNbZoneDeleted (int i, int j, enumPiece p, boolean temp) {
+  public int checkNbZoneDeleted (int i, int j, boolean temp, enumPiece p) {
     
     if (!temp) {
       for (int k = 0; k < this.side; k++) {
@@ -212,8 +212,13 @@ class Board {
     return (j - j%3) + (i - i%3) * 3;
   }
 
-  public boolean placementSinglePossible (int i, int j) {
-    return !this.board[i][j];
+  public boolean placementSinglePossible (int i, int j, boolean temp) {
+    if (temp) {
+      return !this.tempBoard[i][j];
+    } else {
+      return !this.board[i][j];
+    }
+    
   }
 
   public void placeSingle (int i, int j, boolean temp) {
@@ -224,14 +229,14 @@ class Board {
     }
   }
   
-  public int bestScoreSingle () {
+  public int bestScoreSingle (boolean temp) {
     int score = 0;
     int scoreMax = 0;
    for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementSinglePossible(i, j)) {
-          score = scoreSingle(i, j);
-          score += checkNbZoneDeleted(i, j, enumPiece.SINGLE);
+        if (placementSinglePossible(i, j, temp)) {
+          score = scoreSingle(i, j, temp);
+          score += checkNbZoneDeleted(i, j, temp, enumPiece.SINGLE);
           if (score > scoreMax) {
             scoreMax = score;
           }
@@ -250,7 +255,7 @@ class Board {
       for (int j = 0; j< SIDE; j++) {
         if (placementSinglePossible(i, j, temp)) {
           scoreAct = scoreSingle(i, j, temp);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.SINGLE, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.SINGLE);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -327,14 +332,14 @@ class Board {
     return score;
   }
   
-  public int bestScoreDiago2 () {
+  public int bestScoreDiago2 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementDiago2Possible(i, j)) {
-          scoreAct = scoreDiago2(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.DIAGONALE2);
+        if (placementDiago2Possible(i, j, temp)) {
+          scoreAct = scoreDiago2(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.DIAGONALE2);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -345,16 +350,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestDiago2 () {
+  public boolean placeBestDiago2 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementDiago2Possible(i, j)) {
-          scoreAct = scoreDiago2(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.DIAGONALE2);
+        if (placementDiago2Possible(i, j, temp)) {
+          scoreAct = scoreDiago2(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.DIAGONALE2);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -370,9 +375,14 @@ class Board {
     return iMax != -1;
   }
 
-  public boolean placementDiago2Possible (int i, int j) {
+  public boolean placementDiago2Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i+1][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j+1];
+      }
+      
     }
     return false;
   }
@@ -454,14 +464,14 @@ class Board {
     }
   }
   
-  public int bestScoreDiago2R () {
+  public int bestScoreDiago2R (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementDiago2RPossible(i, j)) {
-          scoreAct = scoreDiago2R(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.DIAGONALE2R);
+        if (placementDiago2RPossible(i, j, temp)) {
+          scoreAct = scoreDiago2R(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.DIAGONALE2R);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -472,16 +482,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestDiago2R () {
+  public boolean placeBestDiago2R (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementDiago2RPossible(i, j)) {
-          scoreAct = scoreDiago2R(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.DIAGONALE2R);
+        if (placementDiago2RPossible(i, j, temp)) {
+          scoreAct = scoreDiago2R(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.DIAGONALE2R);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -497,9 +507,13 @@ class Board {
     return iMax != -1;
   }
 
-  public boolean placementDiago2RPossible (int i, int j) {
+  public boolean placementDiago2RPossible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 1) {
-      return !this.board[i][j+1] && !this.board[i+1][j];
+      if (temp) {
+        return !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j];
+      } else {
+        return !this.board[i][j+1] && !this.board[i+1][j];
+      }
     }
     return false;
   }
@@ -581,9 +595,14 @@ class Board {
     return score;
   }
 
-  public boolean placementDiago3RPossible (int i, int j) {
+  public boolean placementDiago3RPossible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i][j+2] && !this.board[i+1][j+1] && !this.board[i+2][j];
+      if (temp) {
+        return !this.tempBoard[i][j+2] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+2][j];
+      } else {
+        return !this.board[i][j+2] && !this.board[i+1][j+1] && !this.board[i+2][j];
+      }
+      
     }
     return false;
   }
@@ -600,14 +619,14 @@ class Board {
     }
   }
   
-  public int bestScoreDiago3R () {
+  public int bestScoreDiago3R (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementDiago3RPossible(i, j)) {
-          scoreAct = scoreDiago3R(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.DIAGONALE3R);
+        if (placementDiago3RPossible(i, j, temp)) {
+          scoreAct = scoreDiago3R(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.DIAGONALE3R);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -618,16 +637,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestDiago3R () {
+  public boolean placeBestDiago3R (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementDiago3RPossible(i, j)) {
-          scoreAct = scoreDiago3R(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.DIAGONALE3R);
+        if (placementDiago3RPossible(i, j, temp)) {
+          scoreAct = scoreDiago3R(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.DIAGONALE3R);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -714,9 +733,13 @@ class Board {
     return score;
   }
 
-  public boolean placementDiago3Possible (int i, int j) {
+  public boolean placementDiago3Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i+1][j+1] && !this.board[i+2][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+2][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j+1] && !this.board[i+2][j+2];
+      }
     }
     return false;
   }
@@ -733,14 +756,14 @@ class Board {
     }
   }
   
-  public int bestScoreDiago3 () {
+  public int bestScoreDiago3 (boolean temp) {
     int scoreMax = -1;
     int scoreAct = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementDiago3Possible(i, j)) {
-          scoreAct = scoreDiago3(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.DIAGONALE3);
+        if (placementDiago3Possible(i, j, temp)) {
+          scoreAct = scoreDiago3(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.DIAGONALE3);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -751,16 +774,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestDiago3 () {
+  public boolean placeBestDiago3 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementDiago3Possible(i, j)) {
-          scoreAct = scoreDiago3(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.DIAGONALE3);
+        if (placementDiago3Possible(i, j, temp)) {
+          scoreAct = scoreDiago3(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.DIAGONALE3);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -847,9 +870,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLigne2VPossible (int i, int j) {
+  public boolean placementLigne2VPossible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side) {
-      return !this.board[i][j] && !this.board[i+1][j];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j];
+      }
+      
     }
     return false;
   }
@@ -864,14 +892,14 @@ class Board {
     }
   }
   
-  public int bestScoreLigne2V () {
+  public int bestScoreLigne2V (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne2VPossible(i, j)) {
-          scoreAct = scoreLigne2V(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE2V);
+        if (placementLigne2VPossible(i, j, temp)) {
+          scoreAct = scoreLigne2V(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE2V);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -882,16 +910,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLigne2V () {
+  public boolean placeBestLigne2V (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne2VPossible(i, j)) {
-          scoreAct = scoreLigne2V(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE2V);
+        if (placementLigne2VPossible(i, j, temp)) {
+          scoreAct = scoreLigne2V(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE2V);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -980,9 +1008,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLigne2HPossible (int i, int j) {
+  public boolean placementLigne2HPossible (int i, int j, boolean temp) {
     if (i < this.side && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1];
+      }
+      
     }
     return false;
   }
@@ -997,14 +1030,14 @@ class Board {
     }
   }
   
-  public int bestScoreLigne2H () {
+  public int bestScoreLigne2H (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne2HPossible(i, j)) {
-          scoreAct = scoreLigne2H(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE2H);
+        if (placementLigne2HPossible(i, j, temp)) {
+          scoreAct = scoreLigne2H(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE2H);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -1015,16 +1048,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLigne2H () {
+  public boolean placeBestLigne2H (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne2HPossible(i, j)) {
-          scoreAct = scoreLigne2H(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE2H);
+        if (placementLigne2HPossible(i, j, temp)) {
+          scoreAct = scoreLigne2H(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE2H);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -1113,9 +1146,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLigne3VPossible (int i, int j) {
+  public boolean placementLigne3VPossible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j];
+      }
+      
     }
     return false;
   }
@@ -1132,14 +1170,14 @@ class Board {
     }
   }
   
-  public int bestScoreLigne3V () {
+  public int bestScoreLigne3V (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne3VPossible(i, j)) {
-          scoreAct = scoreLigne3V(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE3V);
+        if (placementLigne3VPossible(i, j, temp)) {
+          scoreAct = scoreLigne3V(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE3V);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -1150,16 +1188,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLigne3V () {
+  public boolean placeBestLigne3V (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne3VPossible(i, j)) {
-          scoreAct = scoreLigne3V(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE3V);
+        if (placementLigne3VPossible(i, j, temp)) {
+          scoreAct = scoreLigne3V(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE3V);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -1260,9 +1298,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLigne3HPossible (int i, int j) {
+  public boolean placementLigne3HPossible (int i, int j, boolean temp) {
     if (i < this.side && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2];
+      }
+      
     }
     return false;
   }
@@ -1279,14 +1322,14 @@ class Board {
     }
   }
   
-  public int bestScoreLigne3H () {
+  public int bestScoreLigne3H (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne3HPossible(i, j)) {
-          scoreAct = scoreLigne3H(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE3H);
+        if (placementLigne3HPossible(i, j, temp)) {
+          scoreAct = scoreLigne3H(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE3H);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -1297,16 +1340,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLigne3H () {
+  public boolean placeBestLigne3H (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne3HPossible(i, j)) {
-          scoreAct = scoreLigne3H(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE3H);
+        if (placementLigne3HPossible(i, j, temp)) {
+          scoreAct = scoreLigne3H(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE3H);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -1407,9 +1450,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLigne4VPossible (int i, int j) {
+  public boolean placementLigne4VPossible (int i, int j, boolean temp) {
     if (i < this.side - 3 && j < this.side) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+3][j];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j] && !this.tempBoard[i+3][j];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+3][j];
+      }
+      
     }
     return false;
   }
@@ -1428,14 +1476,14 @@ class Board {
     }
   }
   
-  public int bestScoreLigne4V () {
+  public int bestScoreLigne4V (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne4VPossible(i, j)) {
-          scoreAct = scoreLigne4V(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE4V);
+        if (placementLigne4VPossible(i, j, temp)) {
+          scoreAct = scoreLigne4V(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE4V);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -1446,16 +1494,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLigne4V () {
+  public boolean placeBestLigne4V (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne4VPossible(i, j)) {
-          scoreAct = scoreLigne4V(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE4V);
+        if (placementLigne4VPossible(i, j, temp)) {
+          scoreAct = scoreLigne4V(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE4V);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -1568,9 +1616,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLigne4HPossible (int i, int j) {
+  public boolean placementLigne4HPossible (int i, int j, boolean temp) {
     if (i < this.side && j < this.side - 3) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i][j+3];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i][j+2] && !this.tempBoard[i][j+3];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i][j+3];
+      }
+      
     }
     return false;
   }
@@ -1589,14 +1642,14 @@ class Board {
     }
   }
   
-  public int bestScoreLigne4H () {
+  public int bestScoreLigne4H (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne4HPossible(i, j)) {
-          scoreAct = scoreLigne4H(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE4H);
+        if (placementLigne4HPossible(i, j, temp)) {
+          scoreAct = scoreLigne4H(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE4H);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -1606,16 +1659,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLigne4H () {
+  public boolean placeBestLigne4H (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne4HPossible(i, j)) {
-          scoreAct = scoreLigne4H(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE4H);
+        if (placementLigne4HPossible(i, j, temp)) {
+          scoreAct = scoreLigne4H(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE4H);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -1728,9 +1781,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLigne5VPossible (int i, int j) {
+  public boolean placementLigne5VPossible (int i, int j, boolean temp) {
     if (i < this.side - 4 && j < this.side) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+3][j] && !this.board[i+4][j];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j] && !this.tempBoard[i+3][j] && !this.tempBoard[i+4][j];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+3][j] && !this.board[i+4][j];
+      }
+      
     }
     return false;
   }
@@ -1751,14 +1809,14 @@ class Board {
     }
   }
   
-  public int bestScoreLigne5V () {
+  public int bestScoreLigne5V (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne5VPossible(i, j)) {
-          scoreAct = scoreLigne5V(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE5V);
+        if (placementLigne5VPossible(i, j, temp)) {
+          scoreAct = scoreLigne5V(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE5V);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -1769,16 +1827,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLigne5V () {
+  public boolean placeBestLigne5V (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne5VPossible(i, j)) {
-          scoreAct = scoreLigne5V(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE5V);
+        if (placementLigne5VPossible(i, j, temp)) {
+          scoreAct = scoreLigne5V(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE5V);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -1903,9 +1961,13 @@ class Board {
     return score;
   }
 
-  public boolean placementLigne5HPossible (int i, int j) {
+  public boolean placementLigne5HPossible (int i, int j, boolean temp) {
     if (i < this.side && j < this.side - 4) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i][j+3] && !this.board[i][j+4];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i][j+2] && !this.tempBoard[i][j+3] && !this.tempBoard[i][j+4];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i][j+3] && !this.board[i][j+4];
+      }
     }
     return false;
   }
@@ -1926,14 +1988,14 @@ class Board {
     }
   }
   
-  public int bestScoreLigne5H () {
+  public int bestScoreLigne5H (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne5HPossible(i, j)) {
-          scoreAct = scoreLigne5H(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE5H);
+        if (placementLigne5HPossible(i, j, temp)) {
+          scoreAct = scoreLigne5H(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE5H);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -1944,16 +2006,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLigne5H () {
+  public boolean placeBestLigne5H (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLigne5HPossible(i, j)) {
-          scoreAct = scoreLigne5H(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LIGNE5H);
+        if (placementLigne5HPossible(i, j, temp)) {
+          scoreAct = scoreLigne5H(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LIGNE5H);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -2077,9 +2139,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLittleLPossible (int i, int j) {
+  public boolean placementLittleLPossible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i][j+1];
+      }
+      
     }
     return false;
   }
@@ -2096,14 +2163,14 @@ class Board {
     }
   }
   
-  public int bestScoreLittleL () {
+  public int bestScoreLittleL (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleLPossible(i, j)) {
-          scoreAct = scoreLittleL(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_L);
+        if (placementLittleLPossible(i, j, temp)) {
+          scoreAct = scoreLittleL(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_L);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -2114,16 +2181,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLittleL () {
+  public boolean placeBestLittleL (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleLPossible(i, j)) {
-          scoreAct = scoreLittleL(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_L);
+        if (placementLittleLPossible(i, j, temp)) {
+          scoreAct = scoreLittleL(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_L);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -2216,9 +2283,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLittleL90Possible (int i, int j) {
+  public boolean placementLittleL90Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i+1][j+1] && !this.board[i][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j+1] && !this.board[i][j+1];
+      }
+      
     }
     return false;
   }
@@ -2235,14 +2307,14 @@ class Board {
     }
   }
   
-  public int bestScoreLittleL90 () {
+  public int bestScoreLittleL90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleL90Possible(i, j)) {
-          scoreAct = scoreLittleL90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_L90);
+        if (placementLittleL90Possible(i, j, temp)) {
+          scoreAct = scoreLittleL90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_L90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -2253,16 +2325,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLittleL90 () {
+  public boolean placeBestLittleL90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleL90Possible(i, j)) {
-          scoreAct = scoreLittleL90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_L90);
+        if (placementLittleL90Possible(i, j, temp)) {
+          scoreAct = scoreLittleL90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_L90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -2354,9 +2426,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLittleL180Possible (int i, int j) {
+  public boolean placementLittleL180Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 1) {
-      return !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i][j+1];
+      if (temp) {
+        return !this.tempBoard[i+1][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i][j+1];
+      } else {
+        return !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i][j+1];
+      }
+      
     }
     return false;
   }
@@ -2373,14 +2450,14 @@ class Board {
     }
   }
   
-  public int bestScoreLittleL180 () {
+  public int bestScoreLittleL180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleL180Possible(i, j)) {
-          scoreAct = scoreLittleL180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_L180);
+        if (placementLittleL180Possible(i, j, temp)) {
+          scoreAct = scoreLittleL180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_L180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -2391,16 +2468,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLittleL180 () {
+  public boolean placeBestLittleL180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleL180Possible(i, j)) {
-          scoreAct = scoreLittleL180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_L180);
+        if (placementLittleL180Possible(i, j, temp)) {
+          scoreAct = scoreLittleL180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_L180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -2493,9 +2570,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLittleL270Possible (int i, int j) {
+  public boolean placementLittleL270Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+1][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+1][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+1][j+1];
+      }
+      
     }
     return false;
   }
@@ -2512,14 +2594,14 @@ class Board {
     }
   }
   
-  public int bestScoreLittleL270 () {
+  public int bestScoreLittleL270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleL270Possible(i, j)) {
-          scoreAct = scoreLittleL270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_L270);
+        if (placementLittleL270Possible(i, j, temp)) {
+          scoreAct = scoreLittleL270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_L270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -2530,16 +2612,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLittleL270 () {
+  public boolean placeBestLittleL270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleL270Possible(i, j)) {
-          scoreAct = scoreLittleL270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_L270);
+        if (placementLittleL270Possible(i, j, temp)) {
+          scoreAct = scoreLittleL270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_L270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -2632,9 +2714,14 @@ class Board {
     return score;
   }
 
-  public boolean placementMiddleLPossible (int i, int j) {
+  public boolean placementMiddleLPossible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+2][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j] && !this.tempBoard[i+2][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+2][j+1];
+      }
+      
     }
     return false;
   }
@@ -2653,14 +2740,14 @@ class Board {
     }
   }
   
-  public int bestScoreMiddleL () {
+  public int bestScoreMiddleL (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementMiddleLPossible(i, j)) {
-          scoreAct = scoreMiddleL(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.MIDDLE_L);
+        if (placementMiddleLPossible(i, j, temp)) {
+          scoreAct = scoreMiddleL(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.MIDDLE_L);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -2671,16 +2758,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestMiddleL () {
+  public boolean placeBestMiddleL (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementMiddleLPossible(i, j)) {
-          scoreAct = scoreMiddleL(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.MIDDLE_L);
+        if (placementMiddleLPossible(i, j, temp)) {
+          scoreAct = scoreMiddleL(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.MIDDLE_L);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -2779,9 +2866,14 @@ class Board {
     return score;
   }
 
-  public boolean placementMiddleL90Possible (int i, int j) {
+  public boolean placementMiddleL90Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i][j+1] && !this.board[i][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i][j+1] && !this.board[i][j+2];
+      }
+      
     }
     return false;
   }
@@ -2800,14 +2892,14 @@ class Board {
     }
   }
   
-  public int bestScoreMiddleL90 () {
+  public int bestScoreMiddleL90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementMiddleL90Possible(i, j)) {
-          scoreAct = scoreMiddleL90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.MIDDLE_L90);
+        if (placementMiddleL90Possible(i, j, temp)) {
+          scoreAct = scoreMiddleL90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.MIDDLE_L90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -2818,16 +2910,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestMiddleL90 () {
+  public boolean placeBestMiddleL90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementMiddleL90Possible(i, j)) {
-          scoreAct = scoreMiddleL90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.MIDDLE_L90);
+        if (placementMiddleL90Possible(i, j, temp)) {
+          scoreAct = scoreMiddleL90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.MIDDLE_L90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -2928,9 +3020,14 @@ class Board {
     return score;
   }
 
-  public boolean placementMiddleL180Possible (int i, int j) {
+  public boolean placementMiddleL180Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+2][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1];
+      }
+      
     }
     return false;
   }
@@ -2949,14 +3046,14 @@ class Board {
     }
   }
   
-  public int bestScoreMiddleL270 () {
+  public int bestScoreMiddleL270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementMiddleL270Possible(i, j)) {
-          scoreAct = scoreMiddleL270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.MIDDLE_L270);
+        if (placementMiddleL270Possible(i, j, temp)) {
+          scoreAct = scoreMiddleL270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.MIDDLE_L270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -2967,16 +3064,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestMiddleL270 () {
+  public boolean placeBestMiddleL270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementMiddleL270Possible(i, j)) {
-          scoreAct = scoreMiddleL270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.MIDDLE_L270);
+        if (placementMiddleL270Possible(i, j, temp)) {
+          scoreAct = scoreMiddleL270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.MIDDLE_L270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -3077,9 +3174,14 @@ class Board {
     return score;
   }
 
-  public boolean placementMiddleL270Possible (int i, int j) {
+  public boolean placementMiddleL270Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 2) {
-      return !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2] && !this.board[i][j+2];
+      if (temp) {
+        return !this.tempBoard[i+1][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+1][j+2] && !this.tempBoard[i][j+2];
+      } else {
+        return !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2] && !this.board[i][j+2];
+      }
+      
     }
     return false;
   }
@@ -3098,14 +3200,14 @@ class Board {
     }
   }
   
-  public int bestScoreMiddleL180 () {
+  public int bestScoreMiddleL180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementMiddleL180Possible(i, j)) {
-          scoreAct = scoreMiddleL180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.MIDDLE_L180);
+        if (placementMiddleL180Possible(i, j, temp)) {
+          scoreAct = scoreMiddleL180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.MIDDLE_L180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -3116,16 +3218,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestMiddleL180 () {
+  public boolean placeBestMiddleL180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementMiddleL180Possible(i, j)) {
-          scoreAct = scoreMiddleL180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.MIDDLE_L180);
+        if (placementMiddleL180Possible(i, j, temp)) {
+          scoreAct = scoreMiddleL180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.MIDDLE_L180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -3226,9 +3328,14 @@ class Board {
     return score;
   }
 
-  public boolean placementBigLPossible (int i, int j) {
+  public boolean placementBigLPossible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i][j+1] && !this.board[i][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i][j+1] && !this.board[i][j+2];
+      }
+      
     }
     return false;
   }
@@ -3249,14 +3356,14 @@ class Board {
     }
   }
   
-    public int bestScoreBigL () {
+    public int bestScoreBigL (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigLPossible(i, j)) {
-          scoreAct = scoreBigL(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_L);
+        if (placementBigLPossible(i, j, temp)) {
+          scoreAct = scoreBigL(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_L);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -3268,16 +3375,16 @@ class Board {
   }
 
 
-  public boolean placeBestBigL () {
+  public boolean placeBestBigL (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigLPossible(i, j)) {
-          scoreAct = scoreBigL(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_L);
+        if (placementBigLPossible(i, j, temp)) {
+          scoreAct = scoreBigL(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_L);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -3386,9 +3493,14 @@ class Board {
     return score;
   }
 
-  public boolean placementBigL90Possible (int i, int j) {
+  public boolean placementBigL90Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i+1][j+2] && !this.board[i+2][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i][j+2] && !this.tempBoard[i+1][j+2] && !this.tempBoard[i+2][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i+1][j+2] && !this.board[i+2][j+2];
+      }
+      
     }
     return false;
   }
@@ -3409,14 +3521,14 @@ class Board {
     }
   }
   
-  public int bestScoreBigL90 () {
+  public int bestScoreBigL90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigL90Possible(i, j)) {
-          scoreAct = scoreBigL90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_L90);
+        if (placementBigL90Possible(i, j, temp)) {
+          scoreAct = scoreBigL90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_L90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -3427,16 +3539,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestBigL90 () {
+  public boolean placeBestBigL90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigL90Possible(i, j)) {
-          scoreAct = scoreBigL90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_L90);
+        if (placementBigL90Possible(i, j, temp)) {
+          scoreAct = scoreBigL90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_L90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -3545,9 +3657,14 @@ class Board {
     return score;
   }
 
-  public boolean placementBigL180Possible (int i, int j) {
+  public boolean placementBigL180Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i+2][j] && !this.board[i+2][j+1] && !this.board[i+2][j+2] && !this.board[i+1][j+2] && !this.board[i][j+2];
+      if (temp) {
+        return !this.tempBoard[i+2][j] && !this.tempBoard[i+2][j+1] && !this.tempBoard[i+2][j+2] && !this.tempBoard[i+1][j+2] && !this.tempBoard[i][j+2];
+      } else {
+        return !this.board[i+2][j] && !this.board[i+2][j+1] && !this.board[i+2][j+2] && !this.board[i+1][j+2] && !this.board[i][j+2];
+      }
+      
     }
     return false;
   }
@@ -3568,14 +3685,14 @@ class Board {
     }
   }
   
-  public int bestScoreBigL180 () {
+  public int bestScoreBigL180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigL180Possible(i, j)) {
-          scoreAct = scoreBigL180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_L180);
+        if (placementBigL180Possible(i, j, temp)) {
+          scoreAct = scoreBigL180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_L180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -3586,16 +3703,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestBigL180 () {
+  public boolean placeBestBigL180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigL180Possible(i, j)) {
-          scoreAct = scoreBigL180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_L180);
+        if (placementBigL180Possible(i, j, temp)) {
+          scoreAct = scoreBigL180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_L180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -3704,9 +3821,14 @@ class Board {
     return score;
   }
 
-  public boolean placementBigL270Possible (int i, int j) {
+  public boolean placementBigL270Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+2][j+1] && !this.board[i+2][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j] && !this.tempBoard[i+2][j+1] && !this.tempBoard[i+2][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+2][j+1] && !this.board[i+2][j+2];
+      }
+      
     }
     return false;
   }
@@ -3727,14 +3849,14 @@ class Board {
     }
   }
   
-  public int bestScoreBigL270 () {
+  public int bestScoreBigL270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigL270Possible(i, j)) {
-          scoreAct = scoreBigL270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_L270);
+        if (placementBigL270Possible(i, j, temp)) {
+          scoreAct = scoreBigL270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_L270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -3745,16 +3867,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestBigL270 () {
+  public boolean placeBestBigL270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigL270Possible(i, j)) {
-          scoreAct = scoreBigL270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_L270);
+        if (placementBigL270Possible(i, j, temp)) {
+          scoreAct = scoreBigL270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_L270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -3863,9 +3985,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLittleTPossible (int i, int j) {
+  public boolean placementLittleTPossible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 1) {
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j] && !this.tempBoard[i+1][j+1];
+      } else {
       return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+1][j+1];
+      }
+      
     }
     return false;
   }
@@ -3884,14 +4011,14 @@ class Board {
     }
   }
   
-  public int bestScoreLittleT () {
+  public int bestScoreLittleT (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleTPossible(i, j)) {
-          scoreAct = scoreLittleT(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_T);
+        if (placementLittleTPossible(i, j, temp)) {
+          scoreAct = scoreLittleT(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_T);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -3902,16 +4029,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLittleT () {
+  public boolean placeBestLittleT (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleTPossible(i, j)) {
-          scoreAct = scoreLittleT(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_T);
+        if (placementLittleTPossible(i, j, temp)) {
+          scoreAct = scoreLittleT(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_T);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -4006,9 +4133,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLittleT90Possible (int i, int j) {
+  public boolean placementLittleT90Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i+1][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i][j+2] && !this.tempBoard[i+1][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i+1][j+1];
+      }
+      
     }
     return false;
   }
@@ -4027,14 +4159,14 @@ class Board {
     }
   }
   
-  public int bestScoreLittleT90 () {
+  public int bestScoreLittleT90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleT90Possible(i, j)) {
-          scoreAct = scoreLittleT90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_T90);
+        if (placementLittleT90Possible(i, j, temp)) {
+          scoreAct = scoreLittleT90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_T90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -4045,16 +4177,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLittleT90 () {
+  public boolean placeBestLittleT90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleT90Possible(i, j)) {
-          scoreAct = scoreLittleT90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_T90);
+        if (placementLittleT90Possible(i, j, temp)) {
+          scoreAct = scoreLittleT90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_T90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -4149,9 +4281,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLittleT180Possible (int i, int j) {
+  public boolean placementLittleT180Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 1) {
-      return !this.board[i+1][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1];
+      if (temp) {
+        return !this.tempBoard[i+1][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+2][j+1];
+      } else{
+        return !this.board[i+1][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1];
+      }
+      
     }
     return false;
   }
@@ -4171,14 +4308,14 @@ class Board {
     }
   }
   
-  public int bestScoreLittleT180 () {
+  public int bestScoreLittleT180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleT180Possible(i, j)) {
-          scoreAct = scoreLittleT180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_T180);
+        if (placementLittleT180Possible(i, j, temp)) {
+          scoreAct = scoreLittleT180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_T180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -4190,16 +4327,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLittleT180 () {
+  public boolean placeBestLittleT180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleT180Possible(i, j)) {
-          scoreAct = scoreLittleT180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_T180);
+        if (placementLittleT180Possible(i, j, temp)) {
+          scoreAct = scoreLittleT180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_T180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -4294,9 +4431,14 @@ class Board {
     return score;
   }
 
-  public boolean placementLittleT270Possible (int i, int j) {
+  public boolean placementLittleT270Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 2) {
-      return !this.board[i][j+1] && !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+1][j+2];
+      } else {
+        return !this.board[i][j+1] && !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2];
+      }
+      
     }
     return false;
   }
@@ -4315,14 +4457,14 @@ class Board {
     }
   }
   
-  public int bestScoreLittleT270 () {
+  public int bestScoreLittleT270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleT270Possible(i, j)) {
-          scoreAct = scoreLittleT270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_T270);
+        if (placementLittleT270Possible(i, j, temp)) {
+          scoreAct = scoreLittleT270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_T270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -4333,16 +4475,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestLittleT270 () {
+  public boolean placeBestLittleT270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementLittleT270Possible(i, j)) {
-          scoreAct = scoreLittleT270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.LITTLE_T270);
+        if (placementLittleT270Possible(i, j, temp)) {
+          scoreAct = scoreLittleT270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.LITTLE_T270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -4437,9 +4579,14 @@ class Board {
     return score;
   }
 
-  public boolean placementBigTPossible (int i, int j) {
+  public boolean placementBigTPossible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1] && !this.board[i][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+2][j+1] && !this.tempBoard[i][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1] && !this.board[i][j+2];
+      }
+      
     }
     return false;
   }
@@ -4460,14 +4607,14 @@ class Board {
     }
   }
   
-  public int bestScoreBigT () {
+  public int bestScoreBigT (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigTPossible(i, j)) {
-          scoreAct = scoreBigT(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_T);
+        if (placementBigTPossible(i, j, temp)) {
+          scoreAct = scoreBigT(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_T);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -4478,16 +4625,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestBigT () {
+  public boolean placeBestBigT (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigTPossible(i, j)) {
-          scoreAct = scoreBigT(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_T);
+        if (placementBigTPossible(i, j, temp)) {
+          scoreAct = scoreBigT(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_T);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -4586,9 +4733,14 @@ class Board {
     return score;
   }
 
-  public boolean placementBigT90Possible (int i, int j) {
+  public boolean placementBigT90Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2] && !this.board[i][j+2] && !this.board[i+2][j+2];
+      if (temp) {
+        return !this.tempBoard[i+1][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+1][j+2] && !this.tempBoard[i][j+2] && !this.tempBoard[i+2][j+2];
+      } else {
+        return !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2] && !this.board[i][j+2] && !this.board[i+2][j+2];
+      }
+      
     }
     return false;
   }
@@ -4609,14 +4761,14 @@ class Board {
     }
   }
   
-  public int bestScoreBigT90 () {
+  public int bestScoreBigT90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigT90Possible(i, j)) {
-          scoreAct = scoreBigT90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_T90);
+        if (placementBigT90Possible(i, j, temp)) {
+          scoreAct = scoreBigT90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_T90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -4627,16 +4779,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestBigT90 () {
+  public boolean placeBestBigT90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigT90Possible(i, j)) {
-          scoreAct = scoreBigT90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_T90);
+        if (placementBigT90Possible(i, j, temp)) {
+          scoreAct = scoreBigT90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_T90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -4735,9 +4887,14 @@ class Board {
     return score;
   }
 
-  public boolean placementBigT180Possible (int i, int j) {
+  public boolean placementBigT180Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1] && !this.board[i+2][j+2] && !this.board[i+2][j];
+      if (temp) {
+        return !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+2][j+1] && !this.tempBoard[i+2][j+2] && !this.tempBoard[i+2][j];
+      } else {
+        return !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1] && !this.board[i+2][j+2] && !this.board[i+2][j];
+      }
+      
     }
     return false;
   }
@@ -4758,14 +4915,14 @@ class Board {
     }
   }
   
-  public int bestScoreBigT180 () {
+  public int bestScoreBigT180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigT180Possible(i, j)) {
-          scoreAct = scoreBigT180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_T180);
+        if (placementBigT180Possible(i, j, temp)) {
+          scoreAct = scoreBigT180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_T180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -4776,16 +4933,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestBigT180 () {
+  public boolean placeBestBigT180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigT180Possible(i, j)) {
-          scoreAct = scoreBigT180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_T180);
+        if (placementBigT180Possible(i, j, temp)) {
+          scoreAct = scoreBigT180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_T180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -4884,9 +5041,14 @@ class Board {
     return score;
   }
 
-  public boolean placementBigT270Possible (int i, int j) {
+  public boolean placementBigT270Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+1][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2];
+      }
+      
     }
     return false;
   }
@@ -4907,14 +5069,14 @@ class Board {
     }
   }
   
-  public int bestScoreBigT270 () {
+  public int bestScoreBigT270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigT270Possible(i, j)) {
-          scoreAct = scoreBigT270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_T270);
+        if (placementBigT270Possible(i, j, temp)) {
+          scoreAct = scoreBigT270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_T270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -4925,16 +5087,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestBigT270 () {
+  public boolean placeBestBigT270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementBigT270Possible(i, j)) {
-          scoreAct = scoreBigT270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.BIG_T270);
+        if (placementBigT270Possible(i, j, temp)) {
+          scoreAct = scoreBigT270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.BIG_T270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -5033,9 +5195,14 @@ class Board {
     return score;
   }
 
-  public boolean placementCroixPossible (int i, int j) {
+  public boolean placementCroixPossible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 2) {
-      return !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2] && !this.board[i][j+1] && !this.board[i+2][j+1];
+      if (temp) {
+        return !this.tempBoard[i+1][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+1][j+2] && !this.tempBoard[i][j+1] && !this.tempBoard[i+2][j+1];
+      } else {
+        return !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2] && !this.board[i][j+1] && !this.board[i+2][j+1];
+      }
+      
     }
     return false;
   }
@@ -5056,14 +5223,14 @@ class Board {
     }
   }
   
-  public int bestScoreCroix () {
+  public int bestScoreCroix (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementCroixPossible(i, j)) {
-          scoreAct = scoreCroix(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.CROIX);
+        if (placementCroixPossible(i, j, temp)) {
+          scoreAct = scoreCroix(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.CROIX);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -5074,16 +5241,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestCroix () {
+  public boolean placeBestCroix (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementCroixPossible(i, j)) {
-          scoreAct = scoreCroix(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.CROIX);
+        if (placementCroixPossible(i, j, temp)) {
+          scoreAct = scoreCroix(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.CROIX);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -5170,9 +5337,14 @@ class Board {
     return score;
   }
 
-  public boolean placementCPossible (int i, int j) {
+  public boolean placementCPossible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+2][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j] && !this.tempBoard[i+2][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j] && !this.board[i+2][j] && !this.board[i+2][j+1];
+      }
+      
     }
     return false;
   }
@@ -5193,14 +5365,14 @@ class Board {
     }
   }
   
-  public int bestScoreC () {
+  public int bestScoreC (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementCPossible(i, j)) {
-          scoreAct = scoreC(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.C);
+        if (placementCPossible(i, j, temp)) {
+          scoreAct = scoreC(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.C);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -5211,16 +5383,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestC () {
+  public boolean placeBestC (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementCPossible(i, j)) {
-          scoreAct = scoreC(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.C);
+        if (placementCPossible(i, j, temp)) {
+          scoreAct = scoreC(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.C);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -5331,9 +5503,15 @@ class Board {
     return score;
   }
 
-  public boolean placementC90Possible (int i, int j) {
+  public boolean placementC90Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i+1][j+2];
+      
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i][j+2] && !this.tempBoard[i+1][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i][j+1] && !this.board[i][j+2] && !this.board[i+1][j+2];
+      }
+      
     }
     return false;
   }
@@ -5355,14 +5533,14 @@ class Board {
     }
   }
   
-  public int bestScoreC90 () {
+  public int bestScoreC90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementC90Possible(i, j)) {
-          scoreAct = scoreC90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.C90);
+        if (placementC90Possible(i, j, temp)) {
+          scoreAct = scoreC90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.C90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -5373,16 +5551,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestC90 () {
+  public boolean placeBestC90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementC90Possible(i, j)) {
-          scoreAct = scoreC90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.C90);
+        if (placementC90Possible(i, j, temp)) {
+          scoreAct = scoreC90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.C90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -5493,9 +5671,14 @@ class Board {
     return score;
   }
 
-  public boolean placementC180Possible (int i, int j) {
+  public boolean placementC180Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1] && !this.board[i+2][j];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+2][j+1] && !this.tempBoard[i+2][j];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+2][j+1] && !this.board[i+2][j];
+      }
+      
     }
     return false;
   }
@@ -5516,14 +5699,14 @@ class Board {
     }
   }
   
-  public int bestScoreC180 () {
+  public int bestScoreC180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementC180Possible(i, j)) {
-          scoreAct = scoreC180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.C180);
+        if (placementC180Possible(i, j, temp)) {
+          scoreAct = scoreC180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.C180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -5534,16 +5717,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestC180 () {
+  public boolean placeBestC180 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementC180Possible(i, j)) {
-          scoreAct = scoreC180(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.C180);
+        if (placementC180Possible(i, j, temp)) {
+          scoreAct = scoreC180(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.C180);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -5654,9 +5837,14 @@ class Board {
     return score;
   }
 
-  public boolean placementC270Possible (int i, int j) {
+  public boolean placementC270Possible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2] && !this.board[i][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+1][j+2] && !this.tempBoard[i][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+1][j+2] && !this.board[i][j+2];
+      }
+      
     }
     return false;
   }
@@ -5677,14 +5865,14 @@ class Board {
     }
   }
   
-  public int bestScoreC270 () {
+  public int bestScoreC270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementC270Possible(i, j)) {
-          scoreAct = scoreC270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.C270);
+        if (placementC270Possible(i, j, temp)) {
+          scoreAct = scoreC270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.C270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -5695,16 +5883,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestC270 () {
+  public boolean placeBestC270 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementC270Possible(i, j)) {
-          scoreAct = scoreC270(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.C270);
+        if (placementC270Possible(i, j, temp)) {
+          scoreAct = scoreC270(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.C270);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -5815,9 +6003,14 @@ class Board {
     return score;
   }
 
-  public boolean placementCarrePossible (int i, int j) {
+  public boolean placementCarrePossible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j] && !this.board[i+1][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j] && !this.tempBoard[i+1][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j] && !this.board[i+1][j+1];
+      }
+      
     }
     return false;
   }
@@ -5836,14 +6029,14 @@ class Board {
     }
   }
   
-  public int bestScoreCarre () {
+  public int bestScoreCarre (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementCarrePossible(i, j)) {
-          scoreAct = scoreCarre(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.CARRE);
+        if (placementCarrePossible(i, j, temp)) {
+          scoreAct = scoreCarre(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.CARRE);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -5854,16 +6047,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestCarre () {
+  public boolean placeBestCarre (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementCarrePossible(i, j)) {
-          scoreAct = scoreCarre(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.CARRE);
+        if (placementCarrePossible(i, j, temp)) {
+          scoreAct = scoreCarre(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.CARRE);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -5964,9 +6157,14 @@ class Board {
     return score;
   }
 
-  public boolean placementZPossible (int i, int j) {
+  public boolean placementZPossible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 2) {
-      return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+1][j+2];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+1][j+2];
+      } else {
+        return !this.board[i][j] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+1][j+2];
+      }
+      
     }
     return false;
   }
@@ -5985,14 +6183,14 @@ class Board {
     }
   }
   
-  public int bestScoreZ () {
+  public int bestScoreZ (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementZPossible(i, j)) {
-          scoreAct = scoreZ(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.Z);
+        if (placementZPossible(i, j, temp)) {
+          scoreAct = scoreZ(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.Z);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -6003,16 +6201,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestZ () {
+  public boolean placeBestZ (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementZPossible(i, j)) {
-          scoreAct = scoreZ(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.Z);
+        if (placementZPossible(i, j, temp)) {
+          scoreAct = scoreZ(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.Z);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -6107,9 +6305,14 @@ class Board {
     return score;
   }
 
-  public boolean placementZ90Possible (int i, int j) {
+  public boolean placementZ90Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 1) {
-      return !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+1][j] && !this.board[i+2][j];
+      if (temp) {
+        return !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+1][j] && !this.tempBoard[i+2][j];
+      } else {
+        return !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+1][j] && !this.board[i+2][j];
+      }
+      
     }
     return false;
   }
@@ -6128,14 +6331,14 @@ class Board {
     }
   }
   
-  public int bestScoreZ90 () {
+  public int bestScoreZ90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementZ90Possible(i, j)) {
-          scoreAct = scoreZ90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.Z90);
+        if (placementZ90Possible(i, j, temp)) {
+          scoreAct = scoreZ90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.Z90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -6146,16 +6349,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestZ90 () {
+  public boolean placeBestZ90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementZ90Possible(i, j)) {
-          scoreAct = scoreZ90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.Z90);
+        if (placementZ90Possible(i, j, temp)) {
+          scoreAct = scoreZ90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.Z90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -6250,9 +6453,14 @@ class Board {
     return score;
   }
 
-  public boolean placementZRPossible (int i, int j) {
+  public boolean placementZRPossible (int i, int j, boolean temp) {
     if (i < this.side - 1 && j < this.side - 2) {
-      return !this.board[i][j+2] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+1][j];
+      if (temp) {
+        return !this.tempBoard[i][j+2] && !this.tempBoard[i][j+1] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+1][j];
+      } else {
+        return !this.board[i][j+2] && !this.board[i][j+1] && !this.board[i+1][j+1] && !this.board[i+1][j];
+      }
+      
     }
     return false;
   }
@@ -6271,14 +6479,14 @@ class Board {
     }
   }
   
-  public int bestScoreZR () {
+  public int bestScoreZR (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementZRPossible(i, j)) {
-          scoreAct = scoreZR(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.ZR);
+        if (placementZRPossible(i, j, temp)) {
+          scoreAct = scoreZR(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.ZR);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -6289,16 +6497,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestZR () {
+  public boolean placeBestZR (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementZRPossible(i, j)) {
-          scoreAct = scoreZR(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.ZR);
+        if (placementZRPossible(i, j, temp)) {
+          scoreAct = scoreZR(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.ZR);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -6393,9 +6601,14 @@ class Board {
     return score;
   }
 
-  public boolean placementZR90Possible (int i, int j) {
+  public boolean placementZR90Possible (int i, int j, boolean temp) {
     if (i < this.side - 2 && j < this.side - 1) {
-      return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+2][j+1];
+      if (temp) {
+        return !this.tempBoard[i][j] && !this.tempBoard[i+1][j] && !this.tempBoard[i+1][j+1] && !this.tempBoard[i+2][j+1];
+      } else {
+        return !this.board[i][j] && !this.board[i+1][j] && !this.board[i+1][j+1] && !this.board[i+2][j+1];
+      }
+      
     }
     return false;
   }
@@ -6414,14 +6627,14 @@ class Board {
     }
   }
   
-  public int bestScoreZR90 () {
+  public int bestScoreZR90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementZR90Possible(i, j)) {
-          scoreAct = scoreZR90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.ZR90);
+        if (placementZR90Possible(i, j, temp)) {
+          scoreAct = scoreZR90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.ZR90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
           }
@@ -6432,16 +6645,16 @@ class Board {
     return scoreMax;
   }
 
-  public boolean placeBestZR90 () {
+  public boolean placeBestZR90 (boolean temp) {
     int scoreMax = 0;
     int scoreAct = 0;
     int iMax = -1;
     int jMax = -1;
     for (int i = 0; i < SIDE; i++) {
       for (int j = 0; j< SIDE; j++) {
-        if (placementZR90Possible(i, j)) {
-          scoreAct = scoreZR90(i, j);
-          scoreAct += checkNbZoneDeleted(i, j, enumPiece.ZR90);
+        if (placementZR90Possible(i, j, temp)) {
+          scoreAct = scoreZR90(i, j, temp);
+          scoreAct += checkNbZoneDeleted(i, j, temp, enumPiece.ZR90);
           if (scoreAct > scoreMax) {
             scoreMax = scoreAct;
             iMax = i;
@@ -6536,94 +6749,94 @@ class Board {
     return score;
   }
   
-  public int bestScore (enumPiece p) {
+  public int bestScore (enumPiece p, boolean temp) {
     switch (p) {
     case SINGLE:
-      return bestScoreSingle();
+      return bestScoreSingle(temp);
     case DIAGONALE2:
-      return bestScoreDiago2();
+      return bestScoreDiago2(temp);
     case DIAGONALE2R:
-      return bestScoreDiago2R();
+      return bestScoreDiago2R(temp);
     case DIAGONALE3:
-      return bestScoreDiago3();
+      return bestScoreDiago3(temp);
     case DIAGONALE3R:
-      return bestScoreDiago3R();
+      return bestScoreDiago3R(temp);
     case LIGNE2V:
-      return bestScoreLigne2V();
+      return bestScoreLigne2V(temp);
     case LIGNE3V:
-      return bestScoreLigne3V();
+      return bestScoreLigne3V(temp);
     case LIGNE4V:
-      return bestScoreLigne4V();
+      return bestScoreLigne4V(temp);
     case LIGNE5V:
-      return bestScoreLigne5V();
+      return bestScoreLigne5V(temp);
     case LIGNE2H:
-      return bestScoreLigne2H();
+      return bestScoreLigne2H(temp);
     case LIGNE3H:
-      return bestScoreLigne3H();
+      return bestScoreLigne3H(temp);
     case LIGNE4H:
-      return bestScoreLigne4H();
+      return bestScoreLigne4H(temp);
     case LIGNE5H:
-      return bestScoreLigne5H();
+      return bestScoreLigne5H(temp);
     case LITTLE_L:
-      return bestScoreLittleL();
+      return bestScoreLittleL(temp);
     case LITTLE_L90:
-      return bestScoreLittleL90();
+      return bestScoreLittleL90(temp);
     case LITTLE_L180:
-      return bestScoreLittleL180();
+      return bestScoreLittleL180(temp);
     case LITTLE_L270:
-      return bestScoreLittleL270();
+      return bestScoreLittleL270(temp);
     case MIDDLE_L:
-      return bestScoreMiddleL();
+      return bestScoreMiddleL(temp);
     case MIDDLE_L90:
-      return bestScoreMiddleL90();
+      return bestScoreMiddleL90(temp);
     case MIDDLE_L180:
-      return bestScoreMiddleL180();
+      return bestScoreMiddleL180(temp);
     case MIDDLE_L270:
-      return bestScoreMiddleL270();
+      return bestScoreMiddleL270(temp);
     case BIG_L:
-      return bestScoreBigL();
+      return bestScoreBigL(temp);
     case BIG_L90:
-      return bestScoreBigL90();
+      return bestScoreBigL90(temp);
     case BIG_L180:
-      return bestScoreBigL180();
+      return bestScoreBigL180(temp);
     case BIG_L270:
-      return bestScoreBigL270();
+      return bestScoreBigL270(temp);
     case LITTLE_T:
-      return bestScoreLittleT();
+      return bestScoreLittleT(temp);
     case LITTLE_T90:
-      return bestScoreLittleT90();
+      return bestScoreLittleT90(temp);
     case LITTLE_T180:
-      return bestScoreLittleT180();
+      return bestScoreLittleT180(temp);
     case LITTLE_T270:
-      return bestScoreLittleT270();
+      return bestScoreLittleT270(temp);
     case BIG_T:
-      return bestScoreBigT();
+      return bestScoreBigT(temp);
     case BIG_T90:
-      return bestScoreBigT90();
+      return bestScoreBigT90(temp);
     case BIG_T180:
-      return bestScoreBigT180();
+      return bestScoreBigT180(temp);
     case BIG_T270:
-      return bestScoreBigT270();
+      return bestScoreBigT270(temp);
     case CROIX:
-      return bestScoreCroix();
+      return bestScoreCroix(temp);
     case C:
-      return bestScoreC();
+      return bestScoreC(temp);
     case C90:
-      return bestScoreC90();
+      return bestScoreC90(temp);
     case C180:
-      return bestScoreC180();
+      return bestScoreC180(temp);
     case C270:
-      return bestScoreC270();
+      return bestScoreC270(temp);
     case CARRE:
-      return bestScoreCarre();
+      return bestScoreCarre(temp);
     case Z:
-      return bestScoreZ();
+      return bestScoreZ(temp);
     case Z90:
-      return bestScoreZ90();
+      return bestScoreZ90(temp);
     case ZR:
-      return bestScoreZR();
+      return bestScoreZR(temp);
     case ZR90:
-      return bestScoreZR90();
+      return bestScoreZR90(temp);
     default:
       return -1;
     }
@@ -6767,101 +6980,101 @@ class Board {
     }
   }
 
-  public boolean placementPossible (int i, int j, enumPiece p) {
+  public boolean placementPossible (int i, int j, enumPiece p, boolean temp) {
     switch (p) {
     case SINGLE:
-      return placementSinglePossible(i, j);
+      return placementSinglePossible(i, j, temp);
     case DIAGONALE2:
-      return placementDiago2Possible(i, j);
+      return placementDiago2Possible(i, j, temp);
     case DIAGONALE2R:
-      return placementDiago2RPossible(i, j);
+      return placementDiago2RPossible(i, j, temp);
     case DIAGONALE3:
-      return placementDiago3Possible(i, j);
+      return placementDiago3Possible(i, j, temp);
     case DIAGONALE3R:
-      return placementDiago3RPossible(i, j);
+      return placementDiago3RPossible(i, j, temp);
     case LIGNE2V:
-      return placementLigne2VPossible(i, j);
+      return placementLigne2VPossible(i, j, temp);
     case LIGNE3V:
-      return placementLigne3VPossible(i, j);
+      return placementLigne3VPossible(i, j, temp);
     case LIGNE4V:
-      return placementLigne4VPossible(i, j);
+      return placementLigne4VPossible(i, j, temp);
     case LIGNE5V:
-      return placementLigne5VPossible(i, j);
+      return placementLigne5VPossible(i, j, temp);
     case LIGNE2H:
-      return placementLigne2HPossible(i, j);
+      return placementLigne2HPossible(i, j, temp);
     case LIGNE3H:
-      return placementLigne3HPossible(i, j);
+      return placementLigne3HPossible(i, j, temp);
     case LIGNE4H:
-      return placementLigne4HPossible(i, j);
+      return placementLigne4HPossible(i, j, temp);
     case LIGNE5H:
-      return placementLigne5HPossible(i, j);
+      return placementLigne5HPossible(i, j, temp);
     case LITTLE_L:
-      return placementLittleTPossible(i, j);
+      return placementLittleTPossible(i, j, temp);
     case LITTLE_L90:
-      return placementLittleT90Possible(i, j);
+      return placementLittleT90Possible(i, j, temp);
     case LITTLE_L180:
-      return placementLittleT180Possible(i, j);
+      return placementLittleT180Possible(i, j, temp);
     case LITTLE_L270:
-      return placementLittleT270Possible(i, j);
+      return placementLittleT270Possible(i, j, temp);
     case MIDDLE_L:
-      return placementMiddleLPossible(i, j);
+      return placementMiddleLPossible(i, j, temp);
     case MIDDLE_L90:
-      return placementMiddleL90Possible(i, j);
+      return placementMiddleL90Possible(i, j, temp);
     case MIDDLE_L180:
-      return placementMiddleL180Possible(i, j);
+      return placementMiddleL180Possible(i, j, temp);
     case MIDDLE_L270:
-      return placementMiddleL270Possible(i, j);
+      return placementMiddleL270Possible(i, j, temp);
     case BIG_L:
-      return placementBigLPossible(i, j);
+      return placementBigLPossible(i, j, temp);
     case BIG_L90:
-      return placementBigL90Possible(i, j);
+      return placementBigL90Possible(i, j, temp);
     case BIG_L180:
-      return placementBigL180Possible(i, j);
+      return placementBigL180Possible(i, j, temp);
     case BIG_L270:
-      return placementBigL270Possible(i, j);
+      return placementBigL270Possible(i, j, temp);
     case LITTLE_T:
-      return placementLittleTPossible(i, j);
+      return placementLittleTPossible(i, j, temp);
     case LITTLE_T90:
-      return placementLittleT90Possible(i, j);
+      return placementLittleT90Possible(i, j, temp);
     case LITTLE_T180:
-      return placementLittleT180Possible(i, j);
+      return placementLittleT180Possible(i, j, temp);
     case LITTLE_T270:
-      return placementLittleT270Possible(i, j);
+      return placementLittleT270Possible(i, j, temp);
     case BIG_T:
-      return placementBigTPossible(i, j);
+      return placementBigTPossible(i, j, temp);
     case BIG_T90:
-      return placementBigT90Possible(i, j);
+      return placementBigT90Possible(i, j, temp);
     case BIG_T180:
-      return placementBigT180Possible(i, j);
+      return placementBigT180Possible(i, j, temp);
     case BIG_T270:
-      return placementBigT270Possible(i, j);
+      return placementBigT270Possible(i, j, temp);
     case CROIX:
-      return placementCroixPossible(i, j);
+      return placementCroixPossible(i, j, temp);
     case C:
-      return placementCPossible(i, j);
+      return placementCPossible(i, j, temp);
     case C90:
-      return placementC90Possible(i, j);
+      return placementC90Possible(i, j, temp);
     case C180:
-      return placementC180Possible(i, j);
+      return placementC180Possible(i, j, temp);
     case C270:
-      return placementC270Possible(i, j);
+      return placementC270Possible(i, j, temp);
     case CARRE:
-      return placementCarrePossible(i, j);
+      return placementCarrePossible(i, j, temp);
     case Z:
-      return placementZPossible(i, j);
+      return placementZPossible(i, j, temp);
     case Z90:
-      return placementZ90Possible(i, j);
+      return placementZ90Possible(i, j, temp);
     case ZR:
-      return placementZRPossible(i, j);
+      return placementZRPossible(i, j, temp);
     case ZR90:
-      return placementZR90Possible(i, j);
+      return placementZR90Possible(i, j, temp);
     default:
       return false;
     }
   }
 
 
-  public int placePiece (Piece[] p) {
+  public int placePiece (Piece[] p, boolean temp) {
     
     int bestScore = 0;
     int bestPiece = -1;
@@ -6871,8 +7084,8 @@ class Board {
     for (int i = 0; i < p.length; i++) {
       if (p[i] != null) {
         nbPiece++;
-        if (bestScore(p[i].type) > bestScore) {
-          bestScore = bestScore(p[i].type);
+        if (bestScore(p[i].type, temp) > bestScore) {
+          bestScore = bestScore(p[i].type, temp);
           bestPiece = i;
         }
       }
@@ -6890,7 +7103,7 @@ class Board {
     }
     
     if (nbPiece > 1) {
-      placePieceWorker(p[bestPiece].type, true);
+      placePieceWorker(p[bestPiece].type, false); //TODO Mettre a true et check si il y a une meilleur combinaison
     } else {
       placePieceWorker(p[bestPiece].type, false);
     }
@@ -6993,13 +7206,13 @@ class Board {
     }
   }
 
-  public boolean placePieceP (enumPiece p) {
+  public boolean placePieceP (enumPiece p, boolean temp) {
     boolean placed = false;
     switch(p) {
     case SINGLE:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementSinglePossible(i, j)) {
+          if (placementSinglePossible(i, j, temp)) {
             placeSingle(i, j, false);
             placed = true;
           }
@@ -7009,7 +7222,7 @@ class Board {
     case DIAGONALE2:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementDiago2Possible(i, j)) {
+          if (placementDiago2Possible(i, j, temp)) {
             placeDiago2(i, j, false);
             placed = true;
           }
@@ -7019,7 +7232,7 @@ class Board {
     case DIAGONALE2R:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementDiago2RPossible(i, j)) {
+          if (placementDiago2RPossible(i, j, temp)) {
             placeDiago2R(i, j, false);
             placed = true;
           }
@@ -7029,7 +7242,7 @@ class Board {
     case DIAGONALE3:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementDiago3Possible(i, j)) {
+          if (placementDiago3Possible(i, j, temp)) {
             placeDiago3(i, j, false);
             placed = true;
           }
@@ -7039,7 +7252,7 @@ class Board {
     case DIAGONALE3R:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementDiago3RPossible(i, j)) {
+          if (placementDiago3RPossible(i, j, temp)) {
             placeDiago3R(i, j, false);
             placed = true;
           }
@@ -7049,7 +7262,7 @@ class Board {
     case LIGNE2V:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLigne2VPossible(i, j)) {
+          if (placementLigne2VPossible(i, j, temp)) {
             placeLigne2V(i, j, false);
             placed = true;
           }
@@ -7059,7 +7272,7 @@ class Board {
     case LIGNE2H:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLigne2HPossible(i, j)) {
+          if (placementLigne2HPossible(i, j, temp)) {
             placeLigne2H(i, j, false);
             placed = true;
           }
@@ -7069,7 +7282,7 @@ class Board {
     case LIGNE3V:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLigne3VPossible(i, j)) {
+          if (placementLigne3VPossible(i, j, temp)) {
             placeLigne3V(i, j, false);
             placed = true;
           }
@@ -7079,7 +7292,7 @@ class Board {
     case LIGNE3H:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLigne3HPossible(i, j)) {
+          if (placementLigne3HPossible(i, j, temp)) {
             placeLigne3H(i, j, false);
             placed = true;
           }
@@ -7089,7 +7302,7 @@ class Board {
     case LIGNE4V:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLigne4VPossible(i, j)) {
+          if (placementLigne4VPossible(i, j, temp)) {
             placeLigne4V(i, j, false);
             placed = true;
           }
@@ -7099,7 +7312,7 @@ class Board {
     case LIGNE4H:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLigne4HPossible(i, j)) {
+          if (placementLigne4HPossible(i, j, temp)) {
             placeLigne4H(i, j, false);
             placed = true;
           }
@@ -7109,7 +7322,7 @@ class Board {
     case LIGNE5V:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLigne5VPossible(i, j)) {
+          if (placementLigne5VPossible(i, j, temp)) {
             placeLigne5V(i, j, false);
             placed = true;
           }
@@ -7119,7 +7332,7 @@ class Board {
     case LIGNE5H:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLigne5HPossible(i, j)) {
+          if (placementLigne5HPossible(i, j, temp)) {
             placeLigne5H(i, j, false);
             placed = true;
           }
@@ -7129,7 +7342,7 @@ class Board {
     case LITTLE_L:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLittleLPossible(i, j)) {
+          if (placementLittleLPossible(i, j, temp)) {
             placeLittleL(i, j, false);
             placed = true;
           }
@@ -7139,7 +7352,7 @@ class Board {
     case LITTLE_L90:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLittleL90Possible(i, j)) {
+          if (placementLittleL90Possible(i, j, temp)) {
             placeLittleL90(i, j, false);
             placed = true;
           }
@@ -7149,7 +7362,7 @@ class Board {
     case LITTLE_L180:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLittleL180Possible(i, j)) {
+          if (placementLittleL180Possible(i, j, temp)) {
             placeLittleL180(i, j, false);
             placed = true;
           }
@@ -7159,7 +7372,7 @@ class Board {
     case LITTLE_L270:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLittleL270Possible(i, j)) {
+          if (placementLittleL270Possible(i, j, temp)) {
             placeLittleL270(i, j, false);
             placed = true;
           }
@@ -7169,7 +7382,7 @@ class Board {
     case MIDDLE_L:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementMiddleLPossible(i, j)) {
+          if (placementMiddleLPossible(i, j, temp)) {
             placeMiddleL(i, j, false);
             placed = true;
           }
@@ -7179,7 +7392,7 @@ class Board {
     case MIDDLE_L90:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementMiddleL90Possible(i, j)) {
+          if (placementMiddleL90Possible(i, j, temp)) {
             placeMiddleL90(i, j, false);
             placed = true;
           }
@@ -7189,7 +7402,7 @@ class Board {
     case MIDDLE_L180:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementMiddleL180Possible(i, j)) {
+          if (placementMiddleL180Possible(i, j, temp)) {
             placeMiddleL180(i, j, false);
             placed = true;
           }
@@ -7199,7 +7412,7 @@ class Board {
     case MIDDLE_L270:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementMiddleL270Possible(i, j)) {
+          if (placementMiddleL270Possible(i, j, temp)) {
             placeMiddleL270(i, j, false);
             placed = true;
           }
@@ -7209,7 +7422,7 @@ class Board {
     case BIG_L:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementBigLPossible(i, j)) {
+          if (placementBigLPossible(i, j, temp)) {
             placeBigL(i, j, false);
             placed = true;
           }
@@ -7219,7 +7432,7 @@ class Board {
     case BIG_L90:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementBigL90Possible(i, j)) {
+          if (placementBigL90Possible(i, j, temp)) {
             placeBigL90(i, j, false);
             placed = true;
           }
@@ -7229,7 +7442,7 @@ class Board {
     case BIG_L180:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementBigL180Possible(i, j)) {
+          if (placementBigL180Possible(i, j, temp)) {
             placeBigL180(i, j, false);
             placed = true;
           }
@@ -7239,7 +7452,7 @@ class Board {
     case BIG_L270:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementBigL270Possible(i, j)) {
+          if (placementBigL270Possible(i, j, temp)) {
             placeBigL270(i, j, false);
             placed = true;
           }
@@ -7249,7 +7462,7 @@ class Board {
     case LITTLE_T:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLittleTPossible(i, j)) {
+          if (placementLittleTPossible(i, j, temp)) {
             placeLittleT(i, j, false);
             placed = true;
           }
@@ -7259,7 +7472,7 @@ class Board {
     case LITTLE_T90:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLittleT90Possible(i, j)) {
+          if (placementLittleT90Possible(i, j, temp)) {
             placeLittleT90(i, j, false);
             placed = true;
           }
@@ -7269,7 +7482,7 @@ class Board {
     case LITTLE_T180:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLittleT180Possible(i, j)) {
+          if (placementLittleT180Possible(i, j, temp)) {
             placeLittleT180(i, j, false);
             placed = true;
           }
@@ -7279,7 +7492,7 @@ class Board {
     case LITTLE_T270:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementLittleT270Possible(i, j)) {
+          if (placementLittleT270Possible(i, j, temp)) {
             placeLittleT270(i, j, false);
             placed = true;
           }
@@ -7289,7 +7502,7 @@ class Board {
     case BIG_T:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementBigTPossible(i, j)) {
+          if (placementBigTPossible(i, j, temp)) {
             placeBigT(i, j, false);
             placed = true;
           }
@@ -7299,7 +7512,7 @@ class Board {
     case BIG_T90:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementBigT90Possible(i, j)) {
+          if (placementBigT90Possible(i, j, temp)) {
             placeBigT90(i, j, false);
             placed = true;
           }
@@ -7309,7 +7522,7 @@ class Board {
     case BIG_T180:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementBigT180Possible(i, j)) {
+          if (placementBigT180Possible(i, j, temp)) {
             placeBigT180(i, j, false);
             placed = true;
           }
@@ -7319,7 +7532,7 @@ class Board {
     case BIG_T270:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementBigT270Possible(i, j)) {
+          if (placementBigT270Possible(i, j, temp)) {
             placeBigT270(i, j, false);
             placed = true;
           }
@@ -7329,7 +7542,7 @@ class Board {
     case CROIX:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementCroixPossible(i, j)) {
+          if (placementCroixPossible(i, j, temp)) {
             placeCroix(i, j, false);
             placed = true;
           }
@@ -7339,7 +7552,7 @@ class Board {
     case C:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementCPossible(i, j)) {
+          if (placementCPossible(i, j, temp)) {
             placeC(i, j, false);
             placed = true;
           }
@@ -7349,7 +7562,7 @@ class Board {
     case C90:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementC90Possible(i, j)) {
+          if (placementC90Possible(i, j, temp)) {
             placeC90(i, j, false);
             placed = true;
           }
@@ -7359,7 +7572,7 @@ class Board {
     case C180:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementC180Possible(i, j)) {
+          if (placementC180Possible(i, j, temp)) {
             placeC180(i, j, false);
             placed = true;
           }
@@ -7369,7 +7582,7 @@ class Board {
     case C270:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementC270Possible(i, j)) {
+          if (placementC270Possible(i, j, temp)) {
             placeC270(i, j, false);
             placed = true;
           }
@@ -7379,7 +7592,7 @@ class Board {
     case CARRE:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementCarrePossible(i, j)) {
+          if (placementCarrePossible(i, j, temp)) {
             placeCarre(i, j, false);
             placed = true;
           }
@@ -7389,7 +7602,7 @@ class Board {
     case Z:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementZPossible(i, j)) {
+          if (placementZPossible(i, j, temp)) {
             placeZ(i, j, false);
             placed = true;
           }
@@ -7399,7 +7612,7 @@ class Board {
     case Z90:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementZ90Possible(i, j)) {
+          if (placementZ90Possible(i, j, temp)) {
             placeZ90(i, j, false);
             placed = true;
           }
@@ -7409,7 +7622,7 @@ class Board {
     case ZR:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementZRPossible(i, j)) {
+          if (placementZRPossible(i, j, temp)) {
             placeZR(i, j, false);
             placed = true;
           }
@@ -7419,7 +7632,7 @@ class Board {
     case ZR90:
       for (int i = 0; i < this.side && !placed; i++) {
         for (int j = 0; j < this.side && !placed; j++) {
-          if (placementZR90Possible(i, j)) {
+          if (placementZR90Possible(i, j, temp)) {
             placeZR90(i, j, false);
             placed = true;
           }

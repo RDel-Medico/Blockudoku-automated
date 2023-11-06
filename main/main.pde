@@ -46,7 +46,7 @@ void initGame () {
   p = new Piece[NB_PIECE];
   generePiece(p);
   for (int i = 0; i < NB_PIECE; i++) {
-    pieces[i].placePieceP(p[i].type);
+    pieces[i].placePieceP(p[i].type, false);
   }
 }
 
@@ -99,7 +99,7 @@ void mouseReleased() {
     
   } else if (jeuButtonsActivated[0]) {
 
-    int piecePlaced = b.placePiece(p);
+    int piecePlaced = b.placePiece(p, false);
     
     if (piecePlaced == -1) {
       currentMenu = Menu.ACCEUIL;
@@ -112,7 +112,7 @@ void mouseReleased() {
     if (firstAvaiable(p) == -1) {
       generePiece(p);
       for (int i = 0; i < NB_PIECE; i++) {
-        pieces[i].placePieceP(p[i].type);
+        pieces[i].placePieceP(p[i].type, false);
       }
     }
     jeuButtonsActivated[0] = false;
